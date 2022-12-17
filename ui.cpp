@@ -79,6 +79,7 @@ void menu()
 
 int main(){
     int e;
+
     int choice_1;
     const int model_num=3;
     const int stock_num=2;
@@ -88,6 +89,7 @@ int main(){
     string response,ds;
     logo(e);
     menu();
+    exit();
     return 0;
 }
 
@@ -143,22 +145,21 @@ void managestock(){
         cout << "Invalid answer please redo!!!"<<endl;
         managestock();
     }
-    cout << "\n\nDo u want to change the quantity of product (yes/no) : " ;
+    cout << "\n\nDo u want to change the quantity of product (y/n) : " ;
     cin >> response;
-       while ( response != "yes" && response != "no" )
+       while ( response != "y" && response != "n" )
         {
             cout << "Incorrect responce." << endl;
-            cout << "Please re-enter your answer (yes/no): ";
+            cout << "Please re-enter your answer (y/n): ";
             cin >> response;
         }
-
-        if ( response == "no" )
+        if ( response == "n" )
         {
             cout << "\n\n-------------------------------------------------\n";
             cout << "\nThank you for add new product." << endl;
             menu();
         }
-    }while (response == "yes");
+    }while (response == "y");
 }
 
 void pen()
@@ -178,5 +179,8 @@ void ruler()
     cout<<"Ruler model A:       15cm\n";
     cout<<"Ruler model B:       30cm\n";
 }
+
+
+
 
 
