@@ -89,7 +89,10 @@ int main(){
             cout << "\n\n\n-------------------------------------------------\n";
             cout << "\nThank you for add stock." << endl;
         }
-    }while (response == "yes");
+    }while (response == "yes"); // have bug in this code cause cannot display the sum of stock
+	//have try to use * and & to get the number but fail.
+	//if can slove this then we use this loop which answer=yes will continue update
+	//else delete;
 }
 
 
