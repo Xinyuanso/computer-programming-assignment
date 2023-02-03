@@ -186,7 +186,7 @@ int main() {
             sms.saveToFile("stocks.txt");
             break;
         }
-        case 5://havent do in menu
+        case 5:
             {
             string name;
             cout << "\nEnter the Name of stock to search: ";
