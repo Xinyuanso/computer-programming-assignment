@@ -1,0 +1,204 @@
+#include <iostream>
+#include <iomanip>
+#include <vector>
+#include <fstream>
+#include <algorithm>
+#include <sstream>
+
+using namespace std;
+
+class Stock {
+private:
+    int id;
+    string name;
+    int quantity;
+public:
+    Stock(int id, string name, int quantity)
+        : id(id), name(name), quantity(quantity) {}
+
+    int getId() const { return id; }
+    string getName() const { return name; }
+    int getQuantity() const { return quantity; }
+
+    friend ostream & operator<<(ostream & os, const Stock & stock)
+    //ostream write data to a file.
+    //friend use to declare a non-member function as a "friend" of a class.
+    //operator writes the contents of a Stock object to an output stream.
+    {
+        os << stock.id << "," << stock.name << "," << stock.quantity;
+        return os;
+        //os is variable in the code that represents an output stream.
+    }
+};
+
+class StockManagementSystem {
+private:
+    vector<Stock> stocks;
+    //private member variable that stores a collection of 'Stock' object.
+    bool isStockExist(int id)
+    //check if a 'stock' object exist
+    {
+        return find_if(stocks.begin(), stocks.end(), [id](const Stock & stock) {
+         //  search vector and return to boolean if stock found
+            return stock.getId() == id;
+        }) != stocks.end();
+    }
+public:
+    void displayStocks() {
+        if (stocks.empty()) {
+            cout << "No stocks found." << endl;
+        } else {
+            cout <<"\n---------------------------------------------------------"<<endl;
+            cout << "ID\t\tName\t\t\tQuantity" << endl;
+            cout <<"---------------------------------------------------------"<<endl;
+            for (const auto & stock : stocks) {
+                cout << stock.getId() << "\t\t" << setw(20) << left << stock.getName() << "\t" << setw(20) << stock.getQuantity() << endl;
+            }
+        }
+    }
+
+    bool addStock(int id, string name, int quantity) {
+        if (isStockExist(id)) {
+            cout << "Stock already exists / Stock data is invalid." << endl;
+            return false;
+        }
+        stocks.push_back(Stock(id, name, quantity));
+        cout << "Stock added successfully." << endl;
+        return true;
+    }
+
+    bool deleteStock(int id) {
+        auto stockIter = find_if(stocks.begin(), stocks.end(), [id](const Stock & stock) {
+            return stock.getId() == id;
+        });
+        if (stockIter == stocks.end()) {
+            cout << "Stock not found." << endl;
+            return false;
+        }
+        stocks.erase(stockIter);
+        cout << "Stock deleted successfully." << endl;
+        return true;
+    }
+
+    bool saveToFile(const string & filename) {
+        ofstream file(filename);
+        if (!file.is_open()) {
+            cout << "Cannot open file." << endl;
+            return false;
+        }
+        for (const auto & stock : stocks) {
+            file << stock << endl;
+        }
+        file.close();
+        cout << "Saved to file successfully." << endl;
+        return true;
+    }
+
+    void loadFromFile(const string & filename) {
+    ifstream file(filename);
+    if (!file.is_open()) {
+        cout << "Cannot open file." << endl;
+        return;
+    }
+    stocks.clear();
+    string line;
+    while (getline(file, line)) {
+        string idStr;
+        string name;
+        string quantityStr;
+        istringstream ss(line);
+        getline(ss, idStr, ',');
+        getline(ss, name, ',');
+        getline(ss, quantityStr, ',');
+        int id = stoi(idStr);
+        int quantity = stoi(quantityStr);
+        stocks.push_back(Stock(id, name, quantity));
+    }
+}
+    bool searchStock(string name) {
+    auto stockIter = find_if(stocks.begin(), stocks.end(), [name](const Stock & stock) {
+        return stock.getName() == name;
+
+    });
+    if (stockIter == stocks.end()) {
+        cout << "Stock not found." << endl;
+        return false;
+    }
+    cout << "Stock found(ID/Name/Quantity): " << *stockIter << endl;
+    return true;
+}
+
+};
+
+int main() {
+    StockManagementSystem sms;
+    //sms is a variable name in the provided code and
+    //represents to an instance of the class.
+    sms.loadFromFile("stocks.txt");
+    int choice;
+
+    do {
+        cout << "\n\t\t1. Display Stocks" << endl;
+        cout << "\n\t\t2. Add Stock" << endl;
+        cout << "\n\t\t3. Delete Stock" << endl;
+        cout << "\n\t\t4. Save and Exit" << endl;
+        cout << "\nEnter your choice[1/2/3/4]: ";
+        cin >> choice;
+        switch (choice) {
+        case 1:
+            sms.displayStocks();
+            break;
+        case 2: {
+            int id;
+            string name;
+            int quantity;
+            cout << "\nEnter ID: ";
+            cin >> id;
+             if (!cin) // check if input is not numeric
+            {
+            cin.clear(); // clear error flags
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // discard the input buffer
+            cout << "Error: Stock ID must be a numeric value." << endl;
+            bool addstock;
+            }
+            cout << "\nEnter name: ";
+            cin >> name;
+
+            cout << "\nEnter quantity: ";
+            cin >> quantity;
+             if (!cin) // check if input is not numeric
+            {
+            cin.clear(); // clear error flags
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // discard the input buffer
+            cout << "Error: Stock quantity must be a numeric value." << endl;
+            }
+            sms.addStock(id, name, quantity);
+            break;
+        }
+        case 3: {
+            int id;
+            cout << "\nEnter ID: ";
+            cin >> id;
+            sms.deleteStock(id);
+            break;
+        }
+        case 4:{
+            sms.saveToFile("stocks.txt");
+            break;
+        }
+        case 5://havent do in menu
+            {
+            string name;
+            cout << "\nEnter the Name of stock to search: ";
+            cin >> name;
+            sms.searchStock(name);
+            break;
+            }
+        default:
+            cout << "Invalid choice." << endl;
+            break;
+        }
+
+    } while (choice != 4);
+    return 0;
+}
