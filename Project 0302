@@ -15,11 +15,18 @@ private:
 public:
     Stock(int id, string name, int quantity)
         : id(id), name(name), quantity(quantity) {}
-
-    int getId() const { return id; }
-    string getName() const { return name; }
-    int getQuantity() const { return quantity; }
-
+    int getId() const
+    {
+        return id;
+        }
+    string getName() const
+    {
+        return name;
+        }
+    int getQuantity() const
+    {
+        return quantity;
+        }
     friend ostream & operator<<(ostream & os, const Stock & stock)
     //ostream write data to a file.
     //friend use to declare a non-member function as a "friend" of a class.
@@ -44,6 +51,8 @@ private:
         }) != stocks.end();
     }
 public:
+
+
     void displayStocks() {
         if (stocks.empty()) {
             cout << "No stocks found." << endl;
